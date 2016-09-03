@@ -10,6 +10,7 @@ var bigString = fs.readFileSync("SpellCheck/big.txt").toString();
 var dataList = data.toString().split("\n");
 var pyshell = new PythonShell('my_script.py');
 
+
 var messages = {};
 var out_count = 1;
 pyshell.send("BC");
@@ -89,22 +90,40 @@ pyshell.end(function (err) {
 			{
 			
 			for(var i=0;i<datatypes.length;i++)
-				console.log(datatypes[i]);
-			console.log('can\'t be used in the same function');
+				console.log(datatypes[i] + ' ');
+			if(errorDescription.indexOf('concatenate') > -1)
+					console.log('cannot be concatenated');
+			if(errorDescription.indexOf('convert') > -1)
+					console.log('cannot be implicity converted. Please use ' + datatypes[0] + '()');
 			}
 			else if(datatypes.length == 1)
 			{
 				if(errorDescription.indexOf('__getitem__') > -1)
 					console.log('You are trying to get a value from a ' + datatypes[0] + ' variable');
 				else	
-					console.log(datatypes[0] + ' can\'t be used in this function since it is the wrong data type');
+					console.log(datatypes[0] + ' can\'t be used with this function since it is the wrong data type');
 			}
 
 
 		} 
 		else if (errorType == "ValueError"){
-			console.log("Looks like you need to refresh your Values.");
+			//console.log("Looks like you need to refresh your Values.");
 			console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
+			//console.log("Error Description: " + errorDescription);
+			var datatypes = [];
+			if(errorDescription.indexOf('int') > -1)
+				datatypes.push('int');
+			if(errorDescription.indexOf('long') > -1)
+				datatypes.push('long');
+			if(errorDescription.indexOf('float') > -1)
+				datatypes.push('float');
+
+			if(datatypes.length == 1)
+			{
+				var value = errorDescription.substring(errorDescription.lastIndexOf(" "), errorDescription.length);
+				console.log('Cannot convert ' + value + ' to ' + datatypes[0]);
+			}
+
 		} else if (errorType == "MemoryError"){
 			console.log("Looks like you have memory errors");
 			console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
@@ -112,7 +131,7 @@ pyshell.end(function (err) {
 		} else if (errorType == "ImportError"){
 			console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
 		}
-		// throw err;
+		//throw err;
 	}
 	//console.log(messages);
 });
