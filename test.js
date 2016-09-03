@@ -26,7 +26,7 @@ function getPosition(str, m, i) {
 }
 
 function createMyScript(str){
-	var pyFile = fs.createWriteStream('pyth.py', {
+	var pyFile = fs.createWriteStream('my_script.py', {
   			flags: "w"
 		});
 	pyFile.write(str);
