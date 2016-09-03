@@ -26,17 +26,14 @@ function getPosition(str, m, i) {
 }
 
 pyshell.end(function (err) {
-	console.log(err.traceback);
+	console.log(err.stack);
 	if (err) {
 		var errorName = err.stack.substring(7, err.stack.indexOf('\n'));
 		var errorType = errorName.substring(0, errorName.indexOf(':'));
 		var errorDescription = errorName.substring(errorName.indexOf(':')+2);
-		if(errorType.equals('SyntaxError') == false)
-			var traceback = err.traceback.split("\n");
-		else
-		{
-			
-		}
+		console.log("ERRName: " + errorType );
+		console.log("ERRTYPE: " + errorType );
+		console.log("ERRDesc: " + errorType );
 
 		var lineNumber = traceback[1].split(",")[1];
 		//console.log(traceback);
@@ -131,12 +128,6 @@ pyshell.end(function (err) {
 
 		} 
 		else if (errorType == "ImportError") {
-
-		//	console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
-			var value = errorDescription.substring(errorDescription.lastIndexOf(" "), errorDescription.length);
-			console.log('Cannot find' + value + '. Did you install the package containing' + value + ' on your computer, and if so, have you put it in the correct folder?');
-		}
-		else if (errorType == "SyntaxError") {
 
 		//	console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
 			var value = errorDescription.substring(errorDescription.lastIndexOf(" "), errorDescription.length);
