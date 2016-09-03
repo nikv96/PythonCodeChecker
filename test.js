@@ -30,6 +30,7 @@ pyshell.end(function (err) {
 		if (err.stack.indexOf("SyntaxError")>=0){
 			console.log(err.stack.substring(err.stack.indexOf("SyntaxError"),getPosition(err.stack,"\n", 4)));
 			console.log(err.stack.substring(err.stack.indexOf("line"), err.stack.indexOf("\n")));
+			console.log("You forgot the colon here: "+ err.stack.substring(err.stack.indexOf("if"), err.stack.indexOf("^")));
 		} else{
 			var errorName = err.stack.substring(7, err.stack.indexOf('\n'));
 			var errorType = errorName.substring(0, errorName.indexOf(':'));
