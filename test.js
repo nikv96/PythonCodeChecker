@@ -40,9 +40,9 @@ pyshell.end(function (err) {
 			//console.log(traceback);
 			if (errorType == "NameError"){
 
-				if (traceback[2].indexOf("input(") >=0){
-					console.log("Looks like you are using input()! You should read up on python..");
-					console.log("Anyway, to fix the error all you need to do is change input @"+ lineNumber + " \"" + traceback[2] + "\" to raw_input");
+				if (traceback[2].indexOf("input(") >=0 && traceback[2].indexOf("_input(") <0){
+					console.log("Looks like you are using \"<span class=\"code\">input()</span>! Ask me about input through terminal for python.");
+					console.log("Anyway, to fix the error all you need to do is change <span class=\"code\">input</span> @"+ lineNumber + " \"<span class=\"code\">" + traceback[2] + "</span>\" to raw_input");
 				
 				} else {
 					console.log("Looks like you have a NameError! Ask me more about it! To fix, do the following: ");
@@ -54,9 +54,8 @@ pyshell.end(function (err) {
 					var spellcheck = new PythonShell('SpellCheck/SpellCheck.py');
 					var dat = errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2));
 					spellcheck.send(dat);
-					errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2));
-					console.log("Don't you know how to spell " 
-						+ errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2)));
+					console.log("You might have mispelled <span class=\"code\">" 
+						+ errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2)) + "</span> @"+ lineNumber);
 					spellcheck.on('message', function (message) {
 						console.log(message);
 					});
@@ -79,14 +78,14 @@ pyshell.end(function (err) {
 					}
 				}
 				console.log("Looks like you are trying to access a list element with an index value outside your list. To learn more about it, ask me about Index Errors!");
-				console.log("Anyway, to fix the error all you need to do is change the index value @"+ lineNumber + " \"" + traceback[2] + "\" to something lesser");
-				console.log("The particular index you need to change is " + finalElement +" going by your code.");
+				console.log("Anyway, to fix the error all you need to do is change the index value @"+ lineNumber + " \"<span class=\"code\">" + traceback[2] + "</span>\" to something lesser");
+				console.log("The particular index you need to change is <span class=\"code\">" + finalElement +"</span> going by your code.");
 
 			} 
 			else if (errorType == "TypeError"){
-				// console.log("Looks like you need to refresh your datatypes concepts.");
-				// console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
-				//console.log(errorDescription);
+				console.log("Looks like you need to refresh your datatypes concepts.");
+				console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
+				var op = errorDescription.substring(errorDescription.indexOf(":")-1,errorDescription.indexOf(":"));
 				var datatypes = [];
 				if(errorDescription.indexOf('int') > -1)
 					datatypes.push('int');
@@ -98,18 +97,15 @@ pyshell.end(function (err) {
 					datatypes.push('double');
 				if(errorDescription.indexOf('bool') > -1)
 					datatypes.push('bool');
-				if(datatypes.length > 1) 
-				{
-				
-				for(var i=0;i<datatypes.length;i++)
-					console.log(datatypes[i] + ' ');
-				if(errorDescription.indexOf('concatenate') > -1)
-						console.log('cannot be concatenated');
-				if(errorDescription.indexOf('convert') > -1)
-						console.log('cannot be implicity converted. Please use ' + datatypes[0] + '()');
+				if(datatypes.length > 1) {
+					if(errorDescription.indexOf('concatenate') > -1)
+						console.log(datatypes[0]+" "+ datatypes[1]+' cannot be concatenated');
+					else if(errorDescription.indexOf('convert') > -1)
+						console.log(datatypes[0]+" "+ datatypes[1]+'Cannot be implicity converted. Please use ' + datatypes[0] + '()');
+					else
+						console.log("For this operation " + op + " your datatypes," + datatypes[0]+" and "+ datatypes[1]+ " are wrong")
 				}
-				else if(datatypes.length == 1)
-				{
+				else if(datatypes.length == 1){
 					if(errorDescription.indexOf('__getitem__') > -1)
 						console.log('You are trying to get a value from a ' + datatypes[0] + ' variable');
 					else	
@@ -141,7 +137,7 @@ pyshell.end(function (err) {
 
 				console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
 				var value = errorDescription.substring(errorDescription.lastIndexOf(" "), errorDescription.length);
-				console.log('Cannot find' + value + '. Did you install the package containing' + value + ' on your computer, and if so, have you put it in the correct folder?');
+				console.log('Cannot find the package ' + value);
 			}
 		}
 	}
