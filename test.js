@@ -32,6 +32,7 @@ function createMyScript(str){
 	pyFile.write(str);
 }
 
+var resultMessages = ""
 pyshell.end(function (err) {
 	if (err) {
 		if (err.stack.indexOf("SyntaxError")>=0){
@@ -85,7 +86,7 @@ pyshell.end(function (err) {
 					}
 				}
 				console.log("Looks like you are trying to access a list element with an index value outside your list. To learn more about it, ask me about Index Errors!");
-				console.log("Anyway, to fix the error all you need to do is change the index value @"+ lineNumber + " \"<span class=\"code\">" + traceback[2] + "</span>\" to something lesser");
+				console.log("Anyway, to fix the error all you need to do is change the index value @"+ lineNumber + " \"<span class=\"code\">" + traceback[2] + "</span> to something lesser");
 				console.log("The particular index you need to change is <span class=\"code\">" + finalElement +"</span> going by your code.");
 
 			} 
