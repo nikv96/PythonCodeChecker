@@ -94,15 +94,15 @@ pyshell.end(function (err) {
 			if(datatypes.length == 1)
 			{
 				var value = errorDescription.substring(errorDescription.lastIndexOf(" "), errorDescription.length);
-				console.log('Cannot convert ' + value + ' to ' + datatypes[0]);
+				console.log('Cannot convert' + value + ' to ' + datatypes[0]);
 			}
 
-		} else if (errorType == "MemoryError"){
-			console.log("Looks like you have memory errors");
-			console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
-			
-		} else if (errorType == "ImportError"){
-			console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
+		} 
+		else if (errorType == "ImportError") {
+
+		//	console.log("Your error is here "+ lineNumber + " \"" + traceback[2]);
+			var value = errorDescription.substring(errorDescription.lastIndexOf(" "), errorDescription.length);
+			console.log('Cannot find' + value + '. Did you install the package containing' + value + ' on your computer, and if so, have you put it in the correct folder?');
 		}
 		//throw err;
 	}
