@@ -2,13 +2,17 @@ var PythonShell = require('python-shell');
 var fs = require("fs");
 
 var data = fs.readFileSync('my_script.py');
+var bigFile = fs.createWriteStream('SpellCheck/big.txt', {
+  flags: "a"
+});
+var bigString = fs.readFileSync("SpellCheck/big.txt").toString();
+
 var dataList = data.toString().split("\n");
 var pyshell = new PythonShell('my_script.py');
 
 var messages = {};
 var out_count = 1;
 pyshell.send("BC");
-
 
 pyshell.on('message', function (message) {
 	console.log(message);
@@ -31,20 +35,32 @@ pyshell.end(function (err) {
 		var lineNumber = traceback[1].split(",")[1];
 		//console.log(traceback);
 		if (errorType == "NameError"){
-			var spellcheck = new PythonShell('SpellCheck/SpellCheck.py');
-			var dat = errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2));
-			spellcheck.send(dat);
-			errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2));
-			console.log("Don't you know how to spell " 
-				+ errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2)));
-			spellcheck.on('message', function (message) {
-				console.log(message);
-			});
-			spellcheck.end(function(error){
-				if (error){
-					console.log(error.stack);
+
+			if (traceback[2].indexOf("input(") >0){
+				console.log("Looks like you are using input()! You should read up on python..");
+				console.log("Anyway, to fix the error all you need to do is change input @"+ lineNumber + " \"" + traceback[2] + "\" to raw_input");
+			
+			} else {
+				for (i in dataList){
+					if (dataList[i].substring(0,dataList[i].search("=")).length != 0)
+						if (bigString.indexOf((dataList[i].substring(0,dataList[i].search("=")))) < 0)
+							bigFile.write(dataList[i].substring(0,dataList[i].search("="))+"\n");
 				}
-			});
+				var spellcheck = new PythonShell('SpellCheck/SpellCheck.py');
+				var dat = errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2));
+				spellcheck.send(dat);
+				errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2));
+				console.log("Don't you know how to spell " 
+					+ errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2)));
+				spellcheck.on('message', function (message) {
+					console.log(message);
+				});
+				spellcheck.end(function(error){
+					if (error){
+						console.log(error.stack);
+					}
+				});
+			}
 		} else if (errorType == "IndexError"){
 
 			//var declare = dataList.indexOf( traceback[2].substring(traceback[2].indexOf("[")-2,traceback[2].indexOf("["))+" =");
