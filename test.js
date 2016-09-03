@@ -10,14 +10,20 @@ var bigString = fs.readFileSync("SpellCheck/big.txt").toString();
 var dataList = data.toString().split("\n");
 var pyshell = new PythonShell('my_script.py');
 
+var out_count = 0;
+pyshell.send("Hey");
 
-var messages = {};
-var out_count = 1;
-pyshell.send("BC");
+var actual_outputs = ["1","4","4"]
+var flag = false
 
+finalMessage = []
 pyshell.on('message', function (message) {
+	finalMessage.push(message);
 	console.log(message);
-	messages[out_count] = message;
+	if (message != actual_outputs[out_count]){
+		finalMessage.push("This output is wrong. Try to implement it in a different way. You may have missed a trick here!");
+		console.log("This output is wrong. Try to implement it in a different way. You may have missed a trick here!")
+	}
 	out_count += 1;
 });
 

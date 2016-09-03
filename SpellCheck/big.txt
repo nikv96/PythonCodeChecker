@@ -16,12 +16,12 @@ while
 and
 del
 global
-not	
+not
 with
 as
 elif
-if	
-or	
+if
+or
 yield
 assert
 else
