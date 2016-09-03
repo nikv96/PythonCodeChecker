@@ -1,4 +1,3 @@
-s = raw_input()
-st = [1,2]
-print(st[3] + " is a BC!")
+s = ra_input()
+print(s + " is a BC!")
 print("Shit is shit")

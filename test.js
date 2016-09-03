@@ -5,7 +5,6 @@ var data = fs.readFileSync('my_script.py');
 var dataList = data.toString().split("\n");
 var pyshell = new PythonShell('my_script.py');
 
-
 var messages = {};
 var out_count = 1;
 pyshell.send("BC");
@@ -32,9 +31,20 @@ pyshell.end(function (err) {
 		var lineNumber = traceback[1].split(",")[1];
 		//console.log(traceback);
 		if (errorType == "NameError"){
+			var spellcheck = new PythonShell('SpellCheck/SpellCheck.py');
+			var dat = errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2));
+			spellcheck.send(dat);
 			errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2));
 			console.log("Don't you know how to spell " 
 				+ errorDescription.substring(errorDescription.indexOf("'")+1, getPosition(errorDescription, "'", 2)));
+			spellcheck.on('message', function (message) {
+				console.log(message);
+			});
+			spellcheck.end(function(error){
+				if (error){
+					console.log(error.stack);
+				}
+			});
 		} else if (errorType == "IndexError"){
 
 			//var declare = dataList.indexOf( traceback[2].substring(traceback[2].indexOf("[")-2,traceback[2].indexOf("["))+" =");
