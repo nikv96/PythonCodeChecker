@@ -25,6 +25,13 @@ function getPosition(str, m, i) {
    return str.split(m, i).join(m).length;
 }
 
+function createMyScript(str){
+	var pyFile = fs.createWriteStream('pyth.py', {
+  			flags: "w"
+		});
+	pyFile.write(str);
+}
+
 pyshell.end(function (err) {
 	if (err) {
 		if (err.stack.indexOf("SyntaxError")>=0){
@@ -41,7 +48,7 @@ pyshell.end(function (err) {
 			if (errorType == "NameError"){
 
 				if (traceback[2].indexOf("input(") >=0 && traceback[2].indexOf("_input(") <0){
-					console.log("Looks like you are using \"<span class=\"code\">input()</span>! Ask me about input through terminal for python.");
+					console.log("Looks like you are using input()! Ask me about input through terminal for python.");
 					console.log("Anyway, to fix the error all you need to do is change <span class=\"code\">input</span> @"+ lineNumber + " \"<span class=\"code\">" + traceback[2] + "</span>\" to raw_input");
 				
 				} else {
